@@ -1,0 +1,56 @@
+# Find devices that are UP
+nmap -sn 192.168.1.0/24
+
+# Find common open ports
+nmap 192.168.1.0/24
+
+# Find selected important ports
+nmap -p 22,53,80,443,445,3389 192.168.1.0/24
+
+# Find all TCP ports
+nmap -p- 192.168.1.0/24
+
+# Find ports + services
+nmap -sV 192.168.1.0/24
+
+# All ports + services
+nmap -p- -sV 192.168.1.0/24
+
+
+
+Save results
+nmap -oN scan.txt 192.168.1.50
+Saves output to a file
+
+
+
+psexec \\<Target-PC-IP> -u <Target-Username> -p <Target-Password> -d -c "C:\path\to\your\local\script.py" python "script.py"
+
+
+
+• If Port 445 (Microsoft-DS / SMB) is OPEN:
+This means the institutional firewall is not blocking file sharing between your devices. You can proceed with the PsExec method discussed earlier, as the administrative shares (Admin$) will be accessible.
+• If Port 3389 (ms-wbt-server / RDP) is OPEN:
+Remote Desktop is enabled. While this usually requires a graphical interface, you can use advanced administrative tools like xfreerdp or native Windows script execution if you have administrative credentials, or log in to configure the environment.
+• If Port 5985/5986 (WinRM) is OPEN:
+PowerShell Remoting is active. You can run your Python script directly using PowerShell from your machine:powershell
+Invoke-Command -ComputerName <Target-IP> -Credential (Get-Credential) -ScriptBlock { python C:\path\to\remote\script.py }
+Use code with caution.
+If all standard management ports are CLOSED or FILTERED:
+If the campus firewall is blocking all inbound connections to that PC, standard "push" tools will fail. In legitimate administrative scenarios where inbound ports are completely locked down, administrators rely on management agents already running on the machine (like SCCM, Intune, or Ansible nodes) or configure a scheduled task via a deployment policy to run the script.
+What were the open ports and services listed in your Nmap output for that target IP? Knowing this will let us pinpoint the exact command line utility available to you.
+
+
+
+[9/30, 6:23 AM] Manogar~¶: ncat -l -p 4444 > received_file.zip
+[9/30, 6:24 AM] Manogar~¶: ncat [RECEIVER_IP_ADDRESS] 4444 < my_document.zip
+[9/30, 6:25 AM] Manogar~¶: winget install Insecure.Nmap
+
+
+
+[9/30, 6:26 AM] Manogar~¶: 1. Simple Command-Line Chat (No Internet Needed)
+If you want to talk to another computer in the lab without using an app, you can create a temporary, raw-text chat room over your local network.
+• On PC A (Receiver): ncat -l -p 5000
+• On PC B (Sender): ncat [PC_A_IP] 5000
+• Once connected, anything you type on one screen and hit Enter will instantly show up on the other.
+[9/30, 6:27 AM] Manogar~¶: ncat [TARGET_IP] 80
